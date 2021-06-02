@@ -52,6 +52,14 @@ export class AppComponent {
   onSelectAll(items: any) {
   }
 
+  createSearchRegex() {
+    let pattern = _.cloneDeep(this.searchText).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    pattern = pattern.split(' ').filter((t) => {
+      return t.length > 0;
+    }).join('|');
+    return new RegExp(pattern, 'gi');
+  }
+
   getFormattedData(object: any) {
     this.resultArray = [];
 
@@ -84,9 +92,8 @@ export class AppComponent {
   }
 
   markText(value: String) {
-    const newIndex = (value.toLowerCase()).indexOf(this.searchText.toLowerCase());
-    const serachRegex = new RegExp(this.searchText, 'gi');
-    return _.cloneDeep(value).replace( /(<([^>]+)>)/ig, '').replace(serachRegex, (match) => `<mark>${match}</mark>`)
+    const searchRegex = this.createSearchRegex();
+    return _.cloneDeep(value).replace( /(<([^>]+)>)/ig, '').replace(searchRegex, (match) => `<mark>${match}</mark>`)
   }
 
   getResults() {
@@ -99,22 +106,24 @@ export class AppComponent {
       this.getFormattedData(_.cloneDeep(this.musicData));
       return;
     } else {
+      const searchRegex = this.createSearchRegex();
       object.sections.forEach((section: any) => {
         section.assets.forEach((value: any, index: any) => {
           value.keywords.every((key: any) => {
-            if (key.toLowerCase().indexOf(this.searchText.toLowerCase()) !== -1 && this.indexObject.keywords.indexOf(index) === -1) {
+            const keyIndex = key.search(searchRegex);
+            if (keyIndex !== -1 && this.indexObject.keywords.indexOf(index) === -1) {
               this.indexObject.keywords.push(index);
               return false;
             }
             return true;
           })
-          const keyIndex = (value.title.replace( /(<([^>]+)>)/ig, '').toLowerCase()).indexOf(this.searchText.toLowerCase());
-          if( keyIndex !== -1 && this.indexObject.title.indexOf(index) === -1) {
+          const titleIndex = (value.title.replace( /(<([^>]+)>)/ig, '')).search(searchRegex);
+          if( titleIndex !== -1 && this.indexObject.title.indexOf(index) === -1) {
             value.title = this.markText(value.title);
             this.indexObject.title.push(index);
           }
           value.description.every((description: any, desIndex: any) => {
-            const descIndex = description.replace( /(<([^>]+)>)/ig, '').toLowerCase().indexOf(this.searchText.toLowerCase());
+            const descIndex = (description.replace( /(<([^>]+)>)/ig, '')).search(searchRegex);
             if ( descIndex !== -1 && this.indexObject.description.indexOf(index) === -1) {
               value.description[desIndex] = this.markText(description)
               this.indexObject.description.push(index);
@@ -123,33 +132,35 @@ export class AppComponent {
             return true;
           })
         })
-
-        if (this.selectedItems.length === 0) {
-          this.resultIndexArray = [...this.indexObject.keywords, ...this.indexObject.title, ...this.indexObject.description];
-          this.resultIndexArray = [...new Set(this.resultIndexArray)];
-        } else if (this.selectedItems.length === 1) {
-          const filterText = this.selectedItems[0].item_text.toLowerCase();
-          this.resultIndexArray = this.indexObject[filterText];
-        } else if (this.selectedItems.length === 2) {
-          const filterText1 = this.selectedItems[0].item_text.toLowerCase();
-          const filterText2 = this.selectedItems[1].item_text.toLowerCase();
-
-          this.indexObject[filterText1].forEach((element: any) => {
-            if(this.indexObject[filterText2].indexOf(element) !== -1 &&
-              this.resultIndexArray.indexOf(element) === -1 ) {
-                this.resultIndexArray.push(element)
-            }
-          });
-        } else if (this.selectedItems.length === 3) {
-          this.indexObject.title.forEach((element: any) => {
-            if(this.indexObject.keywords.indexOf(element) !== -1 &&
-              this.indexObject.description.indexOf(element) !== -1 &&
-              this.resultIndexArray.indexOf(element) === -1 ) {
-                this.resultIndexArray.push(element)
-            }
-          });
-        }
       })
+
+      console.log(this.indexObject)
+
+      if (this.selectedItems.length === 0) {
+        this.resultIndexArray = [...this.indexObject.keywords, ...this.indexObject.title, ...this.indexObject.description];
+        this.resultIndexArray = [...new Set(this.resultIndexArray)];
+      } else if (this.selectedItems.length === 1) {
+        const filterText = this.selectedItems[0].item_text.toLowerCase();
+        this.resultIndexArray = this.indexObject[filterText];
+      } else if (this.selectedItems.length === 2) {
+        const filterText1 = this.selectedItems[0].item_text.toLowerCase();
+        const filterText2 = this.selectedItems[1].item_text.toLowerCase();
+
+        this.indexObject[filterText1].forEach((element: any) => {
+          if(this.indexObject[filterText2].indexOf(element) !== -1 &&
+            this.resultIndexArray.indexOf(element) === -1 ) {
+              this.resultIndexArray.push(element)
+          }
+        });
+      } else if (this.selectedItems.length === 3) {
+        this.indexObject.title.forEach((element: any) => {
+          if(this.indexObject.keywords.indexOf(element) !== -1 &&
+            this.indexObject.description.indexOf(element) !== -1 &&
+            this.resultIndexArray.indexOf(element) === -1 ) {
+              this.resultIndexArray.push(element)
+          }
+        });
+      }
     }
 
     object.sections.forEach((element: any) => {
