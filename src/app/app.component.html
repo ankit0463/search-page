@@ -1,0 +1,54 @@
+<div class="search-header">
+  <label>Search Criteria</label>
+  <hr>
+</div>
+
+<div class="box">
+  <div class="search-box">
+    <input [(ngModel)]="searchText" class="search-bar" type="text" placeholder="Enter Search text..." />
+  </div>
+
+  <div class="multiple-box">
+    <div class="filter-box">
+      <ng-multiselect-dropdown
+        [placeholder]="'Filter'"
+        [settings]="dropdownSettings"
+        [data]="dropdownList"
+        [(ngModel)]="selectedItems"
+        (onSelect)="onItemSelect($event)"
+        (onSelectAll)="onSelectAll($event)">
+      </ng-multiselect-dropdown>
+    </div>
+
+    <div class="search-button-box">
+      <button class="search-button" type="submit" (click)="getResults()">Search</button>
+    </div>
+  </div>
+</div>
+<br><br>
+
+<div class="result-header">
+  <label>Results</label>
+  <hr>
+</div>
+<div class="result-box">
+  <div class="card" *ngFor="let music of resultArray; let i = index">
+    <img src="assets/music_logo.jpg" alt="Music" class="image">
+    <div class="container">
+      <h4 class="no-margin" [innerHTML]=music.title></h4>
+      <p class="no-margin">{{music.runningTime}}</p>
+      <p class="min-margin" [innerHTML]=music.description></p>
+      <a href="music.music?.file_url" class="min-margin">
+        <p>
+          <img src="assets/play.png" alt="Music" class="music"> {{music.music?.text}}
+        </p>
+      </a>
+      <a href="music.lyrics?.file_url" class="min-margin">
+        <p>{{music.lyrics?.text}}</p>
+      </a>
+    </div>
+  </div>
+  <div *ngIf="resultArray.length === 0">
+    No Records to show
+  </div>
+</div>

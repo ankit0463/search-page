@@ -1,0 +1,133 @@
+
+.box {
+  max-width: 100%;
+  display: flex;
+}
+
+.search-header {
+  font-family: "open sans", sans-serif;
+  margin: 0;
+  font-size: 2rem;
+  padding: 1rem;
+}
+
+.result-header {
+  font-family: "open sans", sans-serif;
+  margin: 0;
+  font-size: 1.5rem;
+  padding: 1rem;
+}
+
+.search-box {
+  /* position: absolute; */
+  padding: 1rem;
+}
+
+.search-bar {
+  box-sizing: border-box;
+  border: none;
+  box-shadow: inset 0px -3px 0px 0px rgba(187, 187, 187, 0.2);
+  outline: none;
+  height: 24px;
+  font-size: 18px;
+  padding-bottom: 5px;
+}
+
+
+.filter-box {
+  padding: 0 1rem;
+  width: 203px;
+}
+
+@media (max-width: 600px) {
+  .box {
+    flex-direction: column;
+  }
+
+  .filter-box {
+    width: 190px;
+  }
+
+  .search-button-box {
+    padding-left: 2rem;
+  }
+
+  .image {
+    width: 36% !important;
+    height: 180px !important;
+  }
+
+  .card {
+    width: 96% !important;
+  }
+
+  .result-box {
+    padding: 0 !important;
+  }
+}
+
+
+.multiple-box {
+  display: flex;
+}
+
+.search-button-box {
+  padding-left: 2.5rem;
+  width: 70px;
+}
+
+.search-button {
+  width: 100%;
+  height: 38px;
+  font-size: 0.8rem;
+  color: white;
+  font-weight: 700;
+  background: rgb(48, 128, 202);
+  border: 0px;
+  cursor: pointer;
+  border-radius: 1rem;
+  transition: opacity 0.25s ease-out;
+}
+
+.result-box {
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  padding: 0 2rem;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  width: 94%;
+  padding: 0.5rem;
+  display: flex;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.container {
+  padding: 2px 16px;
+}
+
+.image {
+  width: 26%;
+  height: 140px;
+}
+
+.no-margin {
+  margin: 0;
+}
+
+.min-margin {
+  margin: 0.5rem 0;
+  color: black
+}
+
+.music {
+  width: 16px;
+  height: 16px;
+}
